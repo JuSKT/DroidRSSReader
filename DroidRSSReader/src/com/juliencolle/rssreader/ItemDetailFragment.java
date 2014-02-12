@@ -40,6 +40,7 @@ public class ItemDetailFragment extends Fragment {
 	 * fragment (e.g. upon screen orientation changes).
 	 */
 	public ItemDetailFragment() {
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -55,31 +56,31 @@ public class ItemDetailFragment extends Fragment {
 		}
 	}
 	
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.detail_menu, menu);
-//    }
-//    
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        Log.d("item ID : ", "onOptionsItemSelected Item ID" + id);
-//        if (id == R.id.actionbar_saveoffline) {
-//        	Toast.makeText(getActivity().getApplicationContext(), "This article has been saved of offline reading.", Toast.LENGTH_LONG).show();
-//        	return true;
-//        } else if (id == R.id.actionbar_markunread) {
-//        	DbAdapter dba = new DbAdapter(getActivity());
-//            dba.openToWrite();
-//            dba.markAsUnread(mItem.getGuid());
-//            dba.close();
-//            mItem.setRead(false);
-//            ArticleListAdapter adapter = (ArticleListAdapter) ((ItemListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.item_list)).getListAdapter();
-//            adapter.notifyDataSetChanged();
-//        	return true;
-//        } else {
-//        	return super.onOptionsItemSelected(item);
-//        }
-//    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.detail_menu, menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Log.d("item ID : ", "onOptionsItemSelected Item ID" + id);
+        if (id == R.id.actionbar_saveoffline) {
+        	Toast.makeText(getActivity().getApplicationContext(), "This article has been saved of offline reading.", Toast.LENGTH_LONG).show();
+        	return true;
+        } else if (id == R.id.actionbar_markunread) {
+        	DbAdapter dba = new DbAdapter(getActivity());
+            dba.openToWrite();
+            dba.markAsUnread(mItem.getGuid());
+            dba.close();
+            mItem.setRead(false);
+            ArticleListAdapter adapter = (ArticleListAdapter) ((ItemListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.item_list)).getListAdapter();
+            adapter.notifyDataSetChanged();
+        	return true;
+        } else {
+        	return super.onOptionsItemSelected(item);
+        }
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -42,12 +42,12 @@ public class DbAdapter{
 																KEY_GUID + " text not null, " +
 																KEY_READ + " boolean not null, " + 
 																KEY_OFFLINE + " boolean not null, " + 
-																KEY_TITLE + ", " +
-																KEY_DESCRIPTION + ", " +
-																KEY_PUBDATE + ", " +
-																KEY_AUTHOR + ", " +
-																KEY_URL + ", " +
-																KEY_ENCODED_CONTENT + " " +
+																KEY_TITLE + " text, " +
+																KEY_DESCRIPTION + " text, " +
+																KEY_PUBDATE + " text, " +
+																KEY_AUTHOR + " text, " +
+																KEY_URL + " text, " +
+																KEY_ENCODED_CONTENT + " text " +
 																");";
 	
 	private SQLiteHelper sqLiteHelper;

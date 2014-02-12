@@ -3,6 +3,8 @@ package com.juliencolle.rssreader.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
+
 import com.juliencolle.rssreader.ItemListFragment;
 
 
@@ -18,6 +20,8 @@ public class RssService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		
+		Log.d(" =====> ", "starting service");
 		
 		RssAsyncTask rssat = new RssAsyncTask(itemListFrag);
 		rssat.execute(RSS_URL);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 
 import com.juliencolle.model.article.Article;
 import com.juliencolle.model.article.ArticleContent;
+import com.juliencolle.rssreader.service.RssAsyncTask;
 import com.juliencolle.rssreader.service.RssService;
 
 
@@ -71,6 +73,7 @@ public class ItemListFragment extends ListFragment {
 	 * fragment (e.g. upon screen orientation changes).
 	 */
 	public ItemListFragment() {
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -84,7 +87,6 @@ public class ItemListFragment extends ListFragment {
                 android.R.id.text1,
                 ArticleContent.ITEMS));
 		
-        setHasOptionsMenu(true);
 //		Calendar cal = Calendar.getInstance();
 //
 //		Intent intent = new Intent(this, RssService.class);
@@ -104,7 +106,9 @@ public class ItemListFragment extends ListFragment {
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Log.d("item ID : ", "onOptionsItemSelected Item ID" + id);
         if (id == R.id.actionbar_refresh) {
+        	Log.d("item ID : ", "refresh " + id);
         	refreshList();
         	return true;
         }
@@ -112,14 +116,12 @@ public class ItemListFragment extends ListFragment {
     }
 	
 	private void refreshList(){
-	
-		//Lauch the service
-		// use this to start and trigger a service
-		Intent i= new Intent(getActivity(), RssService.class);
-		getActivity().startService(i); 
-	
-		//rssService = new RssService(this);
-		//rssService.execute(RSS_URL);
+		//Launch the service
+//		Intent i= new Intent(getActivity(), RssService.class);
+//		getActivity().startService(i); 
+		String RSS_URL = "http://www.ombudsman.europa.eu/rss/rss.xml";
+		RssAsyncTask rssat = new RssAsyncTask(this);
+		rssat.execute(RSS_URL);
     }
 
 	@Override

@@ -2,6 +2,8 @@ package com.juliencolle.rssreader.parser;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -111,7 +113,22 @@ public class RssHandler extends DefaultHandler {
 
 		// Check if looking for article, and if article is complete
 		if (localName.equalsIgnoreCase("item")) {
-		
+				 
+	        MessageDigest md = null;
+	        StringBuffer sb = new StringBuffer();
+			try {
+				md = MessageDigest.getInstance("MD5");
+				
+				md.update(currentArticle.getTitle().getBytes());
+		        byte byteData[] = md.digest();
+		        for (int i = 0; i < byteData.length; i++) {
+		        	sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+		        }
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+			currentArticle.setGuid(sb.toString());
+			
 			ArticleContent.addItem(currentArticle);
 
 			currentArticle = new Article();
@@ -119,10 +136,9 @@ public class RssHandler extends DefaultHandler {
 			articlesAdded++;
 			
 			// Lets check if we've hit our limit on number of articles
-			if (articlesAdded >= ARTICLES_LIMIT)
-			{
-				throw new EnoughDataSAXTerminatorException();
-			}
+//			if (articlesAdded >= ARTICLES_LIMIT){
+//				throw new EnoughDataSAXTerminatorException();
+//			}
 		}
 	}
 	
