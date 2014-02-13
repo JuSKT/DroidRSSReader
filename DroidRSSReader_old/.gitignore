@@ -1,0 +1,12 @@
+/gen
+/bin
+
+*.class
+
+# Package Files #
+*.war
+*.ear
+.project
+.classpath
+.settings
+bin

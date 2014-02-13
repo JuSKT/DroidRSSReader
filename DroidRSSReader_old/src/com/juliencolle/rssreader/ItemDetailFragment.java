@@ -1,13 +1,12 @@
 package com.juliencolle.rssreader;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import com.juliencolle.db.DbAdapter;
+import com.juliencolle.model.article.Article;
+import com.juliencolle.model.article.ArticleContent;
+import com.juliencolle.rssreader.adapter.ArticleListAdapter;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,12 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.juliencolle.db.DbAdapter;
-import com.juliencolle.model.article.Article;
-import com.juliencolle.model.article.ArticleContent;
-import com.juliencolle.rssreader.adapter.ArticleListAdapter;
-import com.juliencolle.utils.DateUtils;
 
 
 /**
@@ -58,9 +51,8 @@ public class ItemDetailFragment extends Fragment {
 			// Load the Article content specified by the fragment
 			// arguments. In a real-world scenario, use a Loader
 			// to load content from a content provider.
-//			Log.d("MAP", ArticleContent.ITEMS_MAP.get(getArguments().getString(ARG_ITEM_ID)).getGuid());
-			mItem = ArticleContent.ITEMS_MAP.get(getArguments().getString(ARG_ITEM_ID));
-//			mItem = (Article) getArguments().getSerializable(Article.KEY);
+			mItem = ArticleContent.ITEMS_MAP.get(getArguments().getString(
+					ARG_ITEM_ID));
 		}
 	}
 	
@@ -98,23 +90,8 @@ public class ItemDetailFragment extends Fragment {
 
 		// Show the Article content as text in a TextView.
 		if (mItem != null) {
-//			((TextView) rootView.findViewById(R.id.article_detail)).setText(mItem.getDescription());
-			
-			String title = mItem.getTitle();
-        	String pubDate = mItem.getPubDate().toString();
-            SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss Z", Locale.ENGLISH);
-            try {
-				Date pDate =  df.parse(pubDate);
-				pubDate = "This post was published " + DateUtils.getDateDifference(pDate) + " by " + mItem.getAuthor();
-			} catch (ParseException e) {
-				Log.e("DATE PARSING", "Error parsing date..");
-				pubDate = "published by " + mItem.getAuthor();
-			} 
-            
-        	String content = mItem.getEncodedContent();
-        	((TextView) rootView.findViewById(R.id.article_title)).setText(title);
-        	((TextView) rootView.findViewById(R.id.article_author)).setText(pubDate);
-            ((TextView) rootView.findViewById(R.id.article_detail)).setText(Html.fromHtml(content));
+			((TextView) rootView.findViewById(R.id.article_detail))
+					.setText(mItem.getDescription());
 		}
 
 		return rootView;

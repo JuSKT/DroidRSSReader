@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RSSReader</string>
+    <string name="title_item_detail">Item Detail</string>
+    
+    <string name="title_article_detail">Post Detail</string>
+    <string name="title_article_list">NerdAbility Reader</string>
+	<string name="btn_offline_reading">Save for later</string>
+	<string name="btn_mark_unread">Mark unread</string>
+	<string name="btn_refresh">Refresh</string>
+	
+	<string name="rss_service">Rss Service</string>
+
+</resources>

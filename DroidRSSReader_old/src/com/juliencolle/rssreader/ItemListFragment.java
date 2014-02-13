@@ -1,6 +1,7 @@
 package com.juliencolle.rssreader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -8,13 +9,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.juliencolle.db.DbAdapter;
 import com.juliencolle.model.article.Article;
 import com.juliencolle.model.article.ArticleContent;
-import com.juliencolle.rssreader.adapter.ArticleListAdapter;
-import com.juliencolle.rssreader.service.UpdateItemAsyncTask;
+import com.juliencolle.rssreader.service.RssAsyncTask;
+import com.juliencolle.rssreader.service.RssService;
 
 
 /**
@@ -78,21 +79,22 @@ public class ItemListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		DbAdapter db = new DbAdapter(getActivity());
-		db.openToRead();
-		for (Article a : db.getAllArticles()) {
-			ArticleContent.addItem(a);
-		}
-		db.close();
 
 		// TODO: replace with a real list adapter.
-//        setListAdapter(new ArrayAdapter<Article>(
-//                getActivity(),
-//                android.R.layout.simple_list_item_activated_1,
-//                android.R.id.text1,
-//                ArticleContent.ITEMS));
-        setListAdapter(new ArticleListAdapter(getActivity(), ArticleContent.ITEMS));
+        setListAdapter(new ArrayAdapter<Article>(
+                getActivity(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                ArticleContent.ITEMS));
+		
+//		Calendar cal = Calendar.getInstance();
+//
+//		Intent intent = new Intent(this, RssService.class);
+//		PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+//
+//		AlarmManager alarm = (AlarmManager)getSystemService(getActivity().ALARM_SERVICE);
+//		// Start every 5 minutes => 5*60 seconds
+//		alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 5*60*1000, pintent); 
 	}
 	
 
@@ -113,14 +115,13 @@ public class ItemListFragment extends ListFragment {
         return false;
     }
 	
-	private void refreshList(){		
+	private void refreshList(){
+		//Launch the service
+//		Intent i= new Intent(getActivity(), RssService.class);
+//		getActivity().startService(i); 
 		String RSS_URL = "http://www.ombudsman.europa.eu/rss/rss.xml";
-		UpdateItemAsyncTask uiat = new UpdateItemAsyncTask(getActivity(), true);
-		uiat.execute(RSS_URL);
-		
-		ArticleListAdapter adapter = new ArticleListAdapter(getActivity(), ArticleContent.ITEMS);
-		setListAdapter(adapter);
-		adapter.notifyDataSetChanged();
+		RssAsyncTask rssat = new RssAsyncTask(this);
+		rssat.execute(RSS_URL);
     }
 
 	@Override
@@ -163,8 +164,7 @@ public class ItemListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-//		mCallbacks.onItemSelected(ArticleContent.ITEMS.get(position).getGuid());
-		mCallbacks.onItemSelected(String.valueOf(position));
+		mCallbacks.onItemSelected(ArticleContent.ITEMS.get(position).getGuid());
 	}
 
 	@Override

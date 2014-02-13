@@ -22,8 +22,7 @@ public class ArticleContent {
 	public static Map<String, Article> ITEMS_MAP = new HashMap<String, Article>();
 	
 	static {
-		//Sample ITEMS
-//		addItem(new Article());
+		ITEMS.add(new Article());
 	}
 
 	public static void addItem(Article article) {

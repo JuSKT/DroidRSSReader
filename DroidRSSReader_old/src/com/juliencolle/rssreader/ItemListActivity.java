@@ -1,19 +1,8 @@
 package com.juliencolle.rssreader;
 
-import java.util.Calendar;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.PendingIntent.CanceledException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-
-import com.juliencolle.db.DbAdapter;
-import com.juliencolle.model.article.Article;
-import com.juliencolle.rssreader.adapter.ArticleListAdapter;
-import com.juliencolle.rssreader.service.FetchRssDataService;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -38,10 +27,7 @@ public class ItemListActivity extends FragmentActivity implements
 	 * device.
 	 */
 	private boolean mTwoPane;
-	
-	PendingIntent pintent;
-	AlarmManager alarm;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,25 +45,35 @@ public class ItemListActivity extends FragmentActivity implements
 			((ItemListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
-		
-		pintent = PendingIntent.getService(this, 
-				0, 
-				new Intent(this, FetchRssDataService.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP), 
-				PendingIntent.FLAG_CANCEL_CURRENT
-				);
-		alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+		// TODO: If exposing deep links into your app, handle intents here.
 	}
 	
-	protected void onResume(){
-		super.onResume();
-		// Start every 5 minutes => 5*60 seconds
-		alarm.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), 60*1000, pintent);
-	}
-	
-	protected void onPause(){
-		super.onPause();
-		alarm.cancel(pintent);
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//	    // Inflate the menu items for use in the action bar
+//	    MenuInflater inflater = getMenuInflater();
+//	    inflater.inflate(R.menu.list_menu, menu);
+//	    return super.onCreateOptionsMenu(menu);
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		case android.R.id.home:
+//			// This ID represents the Home or Up button. In the case of this
+//			// activity, the Up button is shown. Use NavUtils to allow users
+//			// to navigate up one level in the application structure. For
+//			// more details, see the Navigation pattern on Android Design:
+//			//
+//			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+//			//
+//			NavUtils.navigateUpTo(this,
+//					new Intent(this, ItemListActivity.class));
+//			return true;
+//		}
+//		return super.onOptionsItemSelected(item);
+//	}
 
 	/**
 	 * Callback method from {@link ItemListFragment.Callbacks} indicating that
@@ -85,25 +81,12 @@ public class ItemListActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onItemSelected(String id) {
-		
-		Article selected = (Article) ((ItemListFragment) getSupportFragmentManager().findFragmentById(R.id.item_list)).getListAdapter().getItem(Integer.parseInt(id));
-        
-        //mark article as read
-		DbAdapter dba = new DbAdapter(getApplicationContext());
-        dba.openToWrite();
-        dba.markAsRead(selected.getGuid());
-        dba.close();
-        selected.setRead(true);
-        ArticleListAdapter adapter = (ArticleListAdapter) ((ItemListFragment) getSupportFragmentManager().findFragmentById(R.id.item_list)).getListAdapter();
-        adapter.notifyDataSetChanged();
-        Log.e("CHANGE", "Changing to read: "+selected.getGuid());
-		
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
 			Bundle arguments = new Bundle();
-			arguments.putString(ItemDetailFragment.ARG_ITEM_ID, selected.getGuid());
+			arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
 			ItemDetailFragment fragment = new ItemDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
@@ -113,7 +96,7 @@ public class ItemListActivity extends FragmentActivity implements
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
-			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, selected.getGuid());
+			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, id);
 			startActivity(detailIntent);
 		}
 	}

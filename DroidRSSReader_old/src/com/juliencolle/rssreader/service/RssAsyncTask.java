@@ -3,6 +3,7 @@ package com.juliencolle.rssreader.service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,18 +15,18 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.database.SQLException;
-import android.os.AsyncTask;
-import android.util.Log;
-
 import com.juliencolle.db.DbAdapter;
 import com.juliencolle.model.article.Article;
 import com.juliencolle.rssreader.ItemListFragment;
 import com.juliencolle.rssreader.adapter.ArticleListAdapter;
 import com.juliencolle.rssreader.parser.RssHandler;
 import com.juliencolle.rssreader.parser.RssHandler.EnoughDataSAXTerminatorException;
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.database.SQLException;
+import android.os.AsyncTask;
+import android.util.Log;
 
 
 public class RssAsyncTask extends AsyncTask<String, Void, List<Article>> {
@@ -76,6 +77,8 @@ public class RssAsyncTask extends AsyncTask<String, Void, List<Article>> {
 					try {
 						fetchedArticle = dba.getBlogListing(a.getGuid());
 					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (ParseException e) {
 						e.printStackTrace();
 					}
 		            dba.close();
